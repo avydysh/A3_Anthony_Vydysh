@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS employee;
 DROP TABLE IF EXISTS department;
 
 CREATE TABLE employee (
-                          emp_id VARCHAR(11) PRIMARY KEY,
+                          emp_id BIGINT PRIMARY KEY,
                           first_name VARCHAR(45),
                           last_name VARCHAR(45),
                           email VARCHAR(255) UNIQUE,
@@ -12,15 +12,15 @@ CREATE TABLE employee (
 );
 
 CREATE TABLE department (
-                            dept_id VARCHAR(11) PRIMARY KEY,
+                            dept_id BIGINT PRIMARY KEY,
                             dept_name VARCHAR(45),
                             email VARCHAR(45) UNIQUE,
                             phone VARCHAR(45)
 );
 
 CREATE TABLE emp_dept (
-                          emp_id VARCHAR(11),
-                          dept_id VARCHAR(11),
+                          emp_id BIGINT,
+                          dept_id BIGINT,
                           from_date DATE,
                           to_date DATE,
                           PRIMARY KEY (emp_id, dept_id),
