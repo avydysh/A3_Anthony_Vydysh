@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header.html :: head"></head>
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+
+<h2>Add or Update Employee</h2>
+
+<form method="post" th:action="@{/employee/save}" onsubmit="return validateForm();">
+    <input type="hidden" id="empId" name="empId" />
+    <label>First Name: <input type="text" name="firstName" id="firstName" required /></label><br/>
+    <label>Last Name: <input type="text" name="lastName" id="lastName" required /></label><br/>
+    <label>Email: <input type="email" name="email" id="email" onblur="checkEmail()" required /></label><br/>
+    <label>Gender:
+        <select name="gender" id="gender" required>
+            <option value="">Select</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select>
+    </label><br/>
+    <label>Hire Date: <input type="date" name="hireDate" id="hireDate" required /></label><br/>
+    <input type="submit" id="submitBtn" value="Add Employee" />
+</form>
+
+<h3>All Employees</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Emp ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>Hire Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="emp : ${employees}">
+        <td th:text="${emp.empId}"></td>
+        <td th:text="${emp.firstName}"></td>
+        <td th:text="${emp.lastName}"></td>
+        <td th:text="${emp.email}"></td>
+        <td th:text="${emp.gender}"></td>
+        <td th:text="${emp.hireDate}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:replace="fragments/footer.html :: footer"></div>
+
+<script>
+    document.getElementById("email").addEventListener("blur", checkEmail);
+
+    function checkEmail() {
+        const email = document.getElementById("email").value.trim();
+        if (!email) return;
+
+        fetch(`/api/employees/email/${email}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Not found");
+                return res.json();
+            })
+            .then(emp => {
+                if (emp && emp.empId) {
+                    document.getElementById("empId").value = emp.empId;
+                    document.getElementById("firstName").value = emp.firstName;
+                    document.getElementById("lastName").value = emp.lastName;
+                    document.getElementById("gender").value = emp.gender;
+                    document.getElementById("hireDate").value = emp.hireDate;
+                    document.getElementById("submitBtn").value = "Update Employee";
+                }
+            })
+            .catch(() => {
+                document.getElementById("empId").value = "";
+                document.getElementById("firstName").value = "";
+                document.getElementById("lastName").value = "";
+                document.getElementById("gender").value = "M";
+                document.getElementById("hireDate").value = "";
+                document.getElementById("submitBtn").value = "Add Employee";
+            });
+    }
+
+    function validateForm() {
+        const email = document.getElementById("email").value;
+        const gender = document.getElementById("gender").value;
+        const hireDate = document.getElementById("hireDate").value;
+
+        const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+        if (!emailPattern.test(email)) {
+            alert("Invalid email format");
+            return false;
+        }
+
+        if (gender !== "M" && gender !== "F") {
+            alert("Please select gender: M or F");
+            return false;
+        }
+
+        if (!hireDate) {
+            alert("Please choose a valid hire date");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+</body>
+</html>

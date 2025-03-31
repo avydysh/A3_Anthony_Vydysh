@@ -23,7 +23,7 @@ public class Employee {
     @Column(name = "last_name", length = 45)
     private String lastName;
 
-    @Column(name = "email", length = 255, unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -33,10 +33,6 @@ public class Employee {
     @Column(name = "hire_date")
     private Date hireDate;
 
-    @PrePersist
-    private void assignEmpId() {
-        this.empId = generateRandom11DigitId();
-    }
 
     private Long generateRandom11DigitId() {
         return (long)(Math.random() * 9_000_000_000L + 1_000_000_000L);
