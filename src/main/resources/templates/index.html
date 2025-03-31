@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header.html :: head"></head>
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+
+<h2>Welcome to the Employee & Department Management Portal</h2>
+<p>Select a section to manage:</p>
+
+<div style="margin-top: 20px;">
+    <a th:href="@{/employee}">
+        <button style="padding: 10px 20px; font-size: 16px;">Manage Employees</button>
+    </a>
+    <a th:href="@{/department}" style="margin-left: 15px;">
+        <button style="padding: 10px 20px; font-size: 16px;">Manage Departments</button>
+    </a>
+    <a th:href="@{/register}" style="margin-left: 15px;">
+        <button style="padding: 10px 20px; font-size: 16px;">Register Employee to Department</button>
+    </a>
+</div>
+
+<div th:replace="fragments/footer.html :: footer"></div>
+</body>
+</html>

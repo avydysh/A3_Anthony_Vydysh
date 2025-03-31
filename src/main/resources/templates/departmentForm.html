@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header.html :: head"></head>
+<body>
+<div th:replace="fragments/header.html :: header"></div>
+
+<h2>Add or Update Department</h2>
+
+<form method="post" th:action="@{/department/save}" onsubmit="return validateForm();">
+    <input type="hidden" id="deptId" name="deptId" />
+
+    <label>Department Name:
+        <input type="text" id="deptName" name="deptName" required />
+    </label><br/>
+
+    <label>Email:
+        <input type="email" id="email" name="email" onblur="checkDeptEmail()" required />
+    </label><br/>
+
+    <label>Phone:
+        <input type="text" id="phone" name="phone" required />
+    </label><br/>
+
+    <input type="submit" id="submitBtn" value="Add Department" />
+</form>
+
+<hr/>
+
+<h3>All Departments</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Dept ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="dept : ${departments}">
+        <td th:text="${dept.deptId}"></td>
+        <td th:text="${dept.deptName}"></td>
+        <td th:text="${dept.email}"></td>
+        <td th:text="${dept.phone}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:replace="fragments/footer.html :: footer"></div>
+
+<script>
+    function checkDeptEmail() {
+        const email = document.getElementById("email").value.trim();
+        if (!email) return;
+
+        fetch(`/api/departments/email/${email}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Department not found");
+                return res.json();
+            })
+            .then(dept => {
+                if (dept && dept.deptId) {
+                    document.getElementById("deptId").value = dept.deptId;
+                    document.getElementById("deptName").value = dept.deptName;
+                    document.getElementById("phone").value = dept.phone;
+                    document.getElementById("submitBtn").value = "Update Department";
+                }
+            })
+            .catch(() => {
+                // Reset form for new department
+                document.getElementById("deptId").value = "";
+                document.getElementById("deptName").value = "";
+                document.getElementById("phone").value = "";
+                document.getElementById("submitBtn").value = "Add Department";
+            });
+    }
+
+    function validateForm() {
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+        if (!emailPattern.test(email)) {
+            alert("Please enter a valid email address.");
+            return false;
+        }
+
+        if (phone.length < 5 || phone.length > 20) {
+            alert("Please enter a valid phone number.");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+</body>
+</html>
